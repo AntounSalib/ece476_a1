@@ -36,6 +36,9 @@ void workerThreadStart_v1(WorkerArgs * const args) {
     // to compute a part of the output image. For example, in a
     // program that uses two threads, thread 0 could compute the top
     // half of the image and thread 1 could compute the bottom half.
+    const int startRow = (args->height)/(args->numThreads)*args->threadId;
+    const int totalRows = (args->height)/(args->numThreads);
+    mandelbrotSerial(args->x0, args->y0, args->x1, args->y1, args->width, args->height, startRow, totalRows, args->maxIterations, args->output);
 
     printf("Hello! This is Mandelbrot implementation 1 from thread %d.", args->threadId);
 }
