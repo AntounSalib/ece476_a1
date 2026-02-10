@@ -36,15 +36,15 @@ out_file="$out_folder/$binary.log"
 slurm_file="SLURM-$binary.log"
 echo "#!/bin/bash"                       > batch.sh
 echo "#SBATCH --nodes=1"                >> batch.sh
+# echo "#SBATCH --exclusive"              >> batch.sh              # added by us
 echo "#SBATCH --ntasks=1"               >> batch.sh          # total number of tasks across all nodes
 echo "#SBATCH --time=00:09:00"          >> batch.sh
 echo "#SBATCH --output=$sbatch_folder/$slurm_file" >> batch.sh
-echo "#SBATCH --mem-per-cpu=16G" >> batch.sh
+echo "#SBATCH --mem-per-cpu=2G" >> batch.sh
 echo "#SBATCH --cpus-per-task=$cores"   >> batch.sh
 echo "#SBATCH --job-name=$binary" >> batch.sh
 echo "#SBATCH --distribution=block:block" >> batch.sh
 echo "#SBATCH --constraint=skylake" >> batch.sh			# using the skylake CPUs
-echo "#SBATCH -p class" >> batch.sh				# using the class partition 
 
 cmd="./$dir/$kernel $kernel_opt 2> $out_file"
 
