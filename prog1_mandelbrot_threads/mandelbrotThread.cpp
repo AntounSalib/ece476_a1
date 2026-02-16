@@ -41,7 +41,7 @@ void workerThreadStart_v1(WorkerArgs * const args) {
     if (args->threadId == args->numThreads - 1){
         totalRows = args->height - startRow;
     }
-    printf("ThreadID: %d, startRow: %d, totalRows: %d, height: %d\n", args->threadId, startRow, totalRows, args->height);
+    // printf("ThreadID: %d, startRow: %d, totalRows: %d, height: %d\n", args->threadId, startRow, totalRows, args->height);
     mandelbrotSerial(args->x0, args->y0, args->x1, args->y1, args->width, args->height, startRow, totalRows, args->maxIterations, args->output);
 
     printf("Hello! This is Mandelbrot implementation 1 from thread %d.\n", args->threadId);
@@ -61,6 +61,11 @@ void workerThreadStart_v2(WorkerArgs * const args) {
     // program that uses two threads, thread 0 could compute the top
     // half of the image and thread 1 could compute the bottom half.
 
+    for(uint i = args->threadId; i < args->height; i += args->numThreads){
+        mandelbrotSerial(args->x0, args->y0, args->x1, args->y1, args->width, args->height, i, 1, args->maxIterations, args->output);
+    }
+
+    
     printf("Hello! This is Mandelbrot implementation 2 from thread %d.", args->threadId);
 }
 
