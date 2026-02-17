@@ -86,6 +86,71 @@ void clampedExpVector(float* values, int* exponents, float* output, int N) {
   // N and VECTOR_WIDTH, not just when VECTOR_WIDTH divides N
   //
   //
+  __prog2_vec_float value_vec,  init_value_vec;
+  __prog2_vec_int exponent_vec;
+  __prog2_vec_int zero_int = _prog2_vset_int(0);
+  __prog2_vec_int one_int = _prog2_vset_int(1);
+  __prog2_vec_float one_float = _prog2_vset_float(1.f);
+  __prog2_vec_float max_vel_vec = _prog2_vset_float(9.999999f);
+  float max_val = 9.999999f;
+  __prog2_mask maskAll, maskExponentZero, maskTemp, maskNotSaved;
+
+  //  Note: Take a careful look at this loop indexing.  This example
+  //  code is not guaranteed to work when (N % VECTOR_WIDTH) != 0.
+  //  Why is that the case?
+  for (int i = 0; i < N; i += VECTOR_WIDTH) {
+    // All ones
+    maskAll = _prog2_init_ones();
+
+    // All zeros
+    maskExponentZero = _prog2_init_ones(0);
+
+    // Load vector of values from contiguous memory addresses
+    _prog2_vload_float(value_vec, values + i, maskAll);  // value_vec = values[i];
+    _prog2_vmove_float(init_value_vec, value_vec, maskAll);
+
+    // Load vector of values from contiguous memory addresses
+    _prog2_vload_int(exponent_vec, exponents + i, maskAll);  // exponent_vec = values[i];
+
+    // set mask according to if exponent is initially zero // if (exponent_vec == 0) {
+    _prog2_veq_int(maskExponentZero, exponent_vec, zero_int, maskAll);
+
+    // Execute instruction using mask ("if" clause)
+    _prog2_vstore_float(output + i, one_float, maskExponentZero);
+
+    // Inverse maskExponentZero to generate "else" mask
+    maskTemp = _prog2_mask_not(maskExponentZero);
+    maskNotSaved = maskTemp;  // } else {
+
+    // decrement exponents
+    _prog2_vsub_int(exponent_vec, exponent_vec, one_int, maskTemp); // exponent_vec -= 1;
+
+    // recompute remaining mask
+    _prog2_vlt_int(maskTemp, zero_int, exponent_vec, maskNotSaved);
+
+    while(_prog2_cntbits(maskTemp)>0){ // while (some exponent remaining){
+      // multiply values by themselves
+      _prog2_vmult_float(value_vec, value_vec, init_value_vec, maskTemp); // value_vec *= value_vec;
+      // printf("in while\n");
+
+      // decrement exponents counter
+      _prog2_vsub_int(exponent_vec, exponent_vec, one_int, maskTemp); // exponent_vec -= 1;
+
+      // recompute remaining mask
+      _prog2_vlt_int(maskTemp, zero_int, exponent_vec, maskNotSaved);
+    } // }
+
+
+    maskTemp = maskNotSaved;
+    _prog2_vgt_float(maskTemp, value_vec, max_vel_vec, maskNotSaved); // if(value_vec[i] > max_vel_vec){
+
+    _prog2_vset_float(value_vec, max_val, maskTemp); // value_vec[i] = max_vel_vec; }
+
+    // Write results back to memory
+    _prog2_vstore_float(output + i, value_vec, maskNotSaved);
+  }
+
+
 }
 
 // returns the sum of all elements in values
