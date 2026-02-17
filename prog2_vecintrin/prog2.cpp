@@ -102,6 +102,13 @@ void clampedExpVector(float* values, int* exponents, float* output, int N) {
     // All ones
     maskAll = _prog2_init_ones();
 
+    if(i + VECTOR_WIDTH > N){
+      int numExtra = N % VECTOR_WIDTH;
+      i -= VECTOR_WIDTH - numExtra;
+      maskAll = _prog2_init_ones(numExtra);
+      maskAll = _prog2_mask_not(maskAll);
+    }
+
     // All zeros
     maskExponentZero = _prog2_init_ones(0);
 
@@ -120,6 +127,7 @@ void clampedExpVector(float* values, int* exponents, float* output, int N) {
 
     // Inverse maskExponentZero to generate "else" mask
     maskTemp = _prog2_mask_not(maskExponentZero);
+    maskTemp = _prog2_mask_and(maskTemp, maskAll);
     maskNotSaved = maskTemp;  // } else {
 
     // decrement exponents
