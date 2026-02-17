@@ -33,9 +33,11 @@ mkdir -p $sbatch_folder
 mkdir -p $out_folder
 out_file="$out_folder/$binary.log"
 
-slurm_file="SLURM-$binary.log"
+timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
+slurm_file="SLURM-${binary}_${timestamp}.log"
 echo "#!/bin/bash"                       > batch.sh
 echo "#SBATCH --nodes=1"                >> batch.sh
+echo "#SBATCH --exclusive"                >> batch.sh
 echo "#SBATCH --ntasks=1"               >> batch.sh          # total number of tasks across all nodes
 echo "#SBATCH --time=00:09:00"          >> batch.sh
 echo "#SBATCH --output=$sbatch_folder/$slurm_file" >> batch.sh

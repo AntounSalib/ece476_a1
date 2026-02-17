@@ -44,7 +44,11 @@ void workerThreadStart_v1(WorkerArgs * const args) {
     // printf("ThreadID: %d, startRow: %d, totalRows: %d, height: %d\n", args->threadId, startRow, totalRows, args->height);
     mandelbrotSerial(args->x0, args->y0, args->x1, args->y1, args->width, args->height, startRow, totalRows, args->maxIterations, args->output);
 
-    printf("Hello! This is Mandelbrot implementation 1 from thread %d.\n", args->threadId);
+    double endTime = CycleTimer::currentSeconds();
+    double timeToCompletion = endTime - startTime;
+
+
+    printf("Hello! This is Mandelbrot implementation 1 from thread %d. Finished in: %f\n", args->threadId, timeToCompletion);
 }
 
 //
@@ -65,8 +69,10 @@ void workerThreadStart_v2(WorkerArgs * const args) {
         mandelbrotSerial(args->x0, args->y0, args->x1, args->y1, args->width, args->height, i, 1, args->maxIterations, args->output);
     }
 
-    
-    printf("Hello! This is Mandelbrot implementation 2 from thread %d.", args->threadId);
+    double endTime = CycleTimer::currentSeconds();
+    double timeToCompletion = endTime - startTime;
+
+    printf("Hello! This is Mandelbrot implementation 2 from thread %d. Finished in: %f\n", args->threadId, timeToCompletion);
 }
 
 //
