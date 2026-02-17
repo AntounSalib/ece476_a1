@@ -139,13 +139,12 @@ void clampedExpVector(float* values, int* exponents, float* output, int N) {
     while(_prog2_cntbits(maskTemp)>0){ // while (some exponent remaining){
       // multiply values by themselves
       _prog2_vmult_float(value_vec, value_vec, init_value_vec, maskTemp); // value_vec *= value_vec;
-      // printf("in while\n");
 
       // decrement exponents counter
       _prog2_vsub_int(exponent_vec, exponent_vec, one_int, maskTemp); // exponent_vec -= 1;
 
       // recompute remaining mask
-      _prog2_vlt_int(maskTemp, zero_int, exponent_vec, maskNotSaved);
+      _prog2_vlt_int(maskTemp, zero_int, exponent_vec, maskTemp);
     } // }
 
 
@@ -180,6 +179,30 @@ float arraySumVector(float* values, int N) {
   // here
   //
   // This is extra credit.
+  __prog2_mask maskAll;
+  __prog2_vec_float x;
+  __prog2_vec_float running_sum = _prog2_vset_float(0.f);
+  
+  for (int i = 0; i < N; i += VECTOR_WIDTH) {
+    // All ones
+    maskAll = _prog2_init_ones();
 
-  return 0.0;
+    // Load vector of values from contiguous memory addresses
+    _prog2_vload_float(x, values + i, maskAll);  // x = values[i];
+
+    // add from vec to running sum
+    _prog2_vadd_float(running_sum, running_sum, x, maskAll);
+  }
+
+  for(int width = VECTOR_WIDTH; width > 1; width /= 2){
+    _prog2_hadd_float(running_sum, running_sum);
+    _prog2_interleave_float(running_sum, running_sum);
+  }
+
+  float sum = 0;
+  __prog2_mask maskOne = _prog2_init_ones(1);
+
+  _prog2_vstore_float(&sum, running_sum, maskOne);
+
+  return sum;
 }
