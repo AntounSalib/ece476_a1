@@ -37,9 +37,10 @@ timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
 slurm_file="SLURM-${binary}_${timestamp}.log"
 echo "#!/bin/bash"                       > batch.sh
 echo "#SBATCH --nodes=1"                >> batch.sh
-echo "#SBATCH --exclusive"                >> batch.sh
+# echo "#SBATCH --exclusive"                >> batch.sh
 echo "#SBATCH --ntasks=1"               >> batch.sh          # total number of tasks across all nodes
-echo "#SBATCH --time=00:09:00"          >> batch.sh
+# echo "#SBATCH --time=00:09:00"          >> batch.sh
+echo "#SBATCH -t 1:01:00"          >> batch.sh
 echo "#SBATCH --output=$sbatch_folder/$slurm_file" >> batch.sh
 echo "#SBATCH --mem=16G" >> batch.sh
 echo "#SBATCH --cpus-per-task=$cores"   >> batch.sh
