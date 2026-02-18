@@ -2,10 +2,10 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH -t 1:01:00
-#SBATCH --output=sbatch/SLURM-mandelbrot_ispc-C4_2026-02-17_22-56-41.log
+#SBATCH --output=sbatch/SLURM-mandelbrot-C32_2026-02-18_18-55-02.log
 #SBATCH --mem=16G
-#SBATCH --cpus-per-task=4
-#SBATCH --job-name=mandelbrot_ispc-C4
+#SBATCH --cpus-per-task=32
+#SBATCH --job-name=mandelbrot-C32
 #SBATCH --distribution=block:block
 #SBATCH --constraint=skylake
-./prog3_mandelbrot_ispc/mandelbrot_ispc -t 2> logs/mandelbrot_ispc-C4.log
+./prog1_mandelbrot_threads/mandelbrot -t 32 -i 1 -v 1 2> logs/mandelbrot-C32.log
