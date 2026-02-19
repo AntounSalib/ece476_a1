@@ -33,8 +33,10 @@ mkdir -p $sbatch_folder
 mkdir -p $out_folder
 out_file="$out_folder/$binary.log"
 
+cpu="skylake"
+
 timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
-slurm_file="SLURM-${binary}_${timestamp}.log"
+slurm_file="SLURM-${binary}_${cpu}_${timestamp}.log"
 echo "#!/bin/bash"                       > batch.sh
 echo "#SBATCH --nodes=1"                >> batch.sh
 # echo "#SBATCH --exclusive"                >> batch.sh
@@ -46,7 +48,7 @@ echo "#SBATCH --mem=16G" >> batch.sh
 echo "#SBATCH --cpus-per-task=$cores"   >> batch.sh
 echo "#SBATCH --job-name=$binary" >> batch.sh
 echo "#SBATCH --distribution=block:block" >> batch.sh
-echo "#SBATCH --constraint=skylake" >> batch.sh			# using the skylake CPUs
+echo "#SBATCH --constraint=${cpu}" >> batch.sh			# using the skylake CPUs
 
 cmd="./$dir/$kernel $kernel_opt 2> $out_file"
 
