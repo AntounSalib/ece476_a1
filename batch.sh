@@ -1,11 +1,13 @@
 #!/bin/bash
 #SBATCH --nodes=1
+#SBATCH -p class
+#SBATCH --exclusive
 #SBATCH --ntasks=1
-#SBATCH -t 1:01:00
-#SBATCH --output=sbatch/SLURM-mandelbrot-C32_2026-02-18_18-55-02.log
+#SBATCH --time=01:01:00
+#SBATCH --output=sbatch/SLURM-sqrt-C32_skylake_2026-02-18_21-12-04.log
 #SBATCH --mem=16G
 #SBATCH --cpus-per-task=32
-#SBATCH --job-name=mandelbrot-C32
+#SBATCH --job-name=sqrt-C32
 #SBATCH --distribution=block:block
 #SBATCH --constraint=skylake
-./prog1_mandelbrot_threads/mandelbrot -t 32 -i 1 -v 1 2> logs/mandelbrot-C32.log
+./prog4_sqrt/sqrt -t 32 2> logs/sqrt-C32.log

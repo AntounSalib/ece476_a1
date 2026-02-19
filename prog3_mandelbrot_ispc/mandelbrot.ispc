@@ -69,11 +69,11 @@ export void mandelbrot_ispc_withtasks(uniform float x0, uniform float y0,
 {
 
     // uniform int rowsPerTask = height / 2;
-    uniform int rowsPerTask = height / programCount;
+    uniform int rowsPerTask = 1;
 
     // create 2 tasks
     // changed launch[2] to launch[x]
-    launch[programCount] mandelbrot_ispc_task(x0, y0, x1, y1,
+    launch[height] mandelbrot_ispc_task(x0, y0, x1, y1,
                                      width, height,
                                      rowsPerTask,
                                      maxIterations,
