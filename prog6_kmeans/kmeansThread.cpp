@@ -111,11 +111,11 @@ void computeAssignments(WorkerArgs *const args) {
  */
 void computeAssignmentsWorker(WorkerArgs *const args) {
 
-  double *minDist = new double[args->M];
-
   int numCoordsPerThread = (int) (args->M/args->numThreads);
   int startIndex = (args->threadId)*numCoordsPerThread;
   int endIndex = (args->threadId)*numCoordsPerThread + numCoordsPerThread;
+
+  double *minDist = new double[endIndex - startIndex];
 
   if (args->threadId == args->numThreads - 1){
     endIndex = args->M;
@@ -123,7 +123,7 @@ void computeAssignmentsWorker(WorkerArgs *const args) {
   
   // Initialize arrays
   for (int m =startIndex; m < endIndex; m++) {
-    minDist[m] = 1e30;
+    minDist[m - startIndex] = 1e30;
     args->clusterAssignments[m] = -1;
   }
 
@@ -132,12 +132,13 @@ void computeAssignmentsWorker(WorkerArgs *const args) {
     for (int m = startIndex; m < endIndex; m++) {
       double d = dist(&args->data[m * args->N],
                       &args->clusterCentroids[k * args->N], args->N);
-      if (d < minDist[m]) {
-        minDist[m] = d;
+      if (d < minDist[m-startIndex]) {
+        minDist[m - startIndex] = d;
         args->clusterAssignments[m] = k;
       }
     }
 
+  delete[] minDist;
 }
 }
 
@@ -173,11 +174,11 @@ void computeAssignmentsThread(WorkerArgs *const args, int numThreads) {
     workerArgs[i].numThreads = numThreads;
   }
 
-  for (int i=1; i<numThreads; i++) {
+  for (int i=0; i<numThreads; i++) {
     workers[i] = std::thread(computeAssignmentsWorker, &workerArgs[i]);
   }
 
-  for (int i=1; i<numThreads; i++) {
+  for (int i=0; i<numThreads; i++) {
       workers[i].join();
   }
 
