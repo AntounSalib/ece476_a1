@@ -54,10 +54,16 @@ static bool stoppingConditionMet(double *prevCost, double *currCost,
  *     (must be the same for x and y).
  */
 double dist(double *x, double *y, int nDim) {
+  double startTime = CycleTimer::currentSeconds();
+  
   double accum = 0.0;
   for (int i = 0; i < nDim; i++) {
     accum += pow((x[i] - y[i]), 2);
   }
+
+  double endTime = CycleTimer::currentSeconds();
+  double runTime = endTime - startTime;
+  printf("Dist ran for %f", runTime);
   return sqrt(accum);
 }
 
@@ -65,6 +71,8 @@ double dist(double *x, double *y, int nDim) {
  * Assigns each data point to its "closest" cluster centroid.
  */
 void computeAssignments(WorkerArgs *const args) {
+  double startTime = CycleTimer::currentSeconds();
+
   double *minDist = new double[args->M];
   
   // Initialize arrays
@@ -86,6 +94,10 @@ void computeAssignments(WorkerArgs *const args) {
   }
 
   delete[] minDist;
+
+  double endTime = CycleTimer::currentSeconds();
+  double runTime = endTime - startTime;
+  printf("ComputeAssignments ran for %f", runTime);
 }
 
 /**
@@ -93,6 +105,8 @@ void computeAssignments(WorkerArgs *const args) {
  * each cluster.
  */
 void computeCentroids(WorkerArgs *const args) {
+  double startTime = CycleTimer::currentSeconds();
+
   int *counts = new int[args->K];
 
   // Zero things out
@@ -123,12 +137,17 @@ void computeCentroids(WorkerArgs *const args) {
   }
 
   delete[] counts;
+
+  double endTime = CycleTimer::currentSeconds();
+  double runTime = endTime - startTime;
+  printf("computeCentroids ran for %f", runTime);
 }
 
 /**
  * Computes the per-cluster cost. Used to check if the algorithm has converged.
  */
 void computeCost(WorkerArgs *const args) {
+  double startTime = CycleTimer::currentSeconds();
   double *accum = new double[args->K];
 
   // Zero things out
@@ -149,6 +168,10 @@ void computeCost(WorkerArgs *const args) {
   }
 
   delete[] accum;
+
+  double endTime = CycleTimer::currentSeconds();
+  double runTime = endTime - startTime;
+  printf("computeCost ran for %f", runTime);
 }
 
 /**
