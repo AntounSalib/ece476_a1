@@ -62,15 +62,15 @@ static bool stoppingConditionMet(double *prevCost, double *currCost,
  *     (must be the same for x and y).
  */
 double dist(double *x, double *y, int nDim) {
-  double startTime = CycleTimer::currentSeconds();
+  // double startTime = CycleTimer::currentSeconds();
   
   double accum = 0.0;
   for (int i = 0; i < nDim; i++) {
     accum += pow((x[i] - y[i]), 2);
   }
 
-  double endTime = CycleTimer::currentSeconds();
-  distTime += endTime - startTime;
+  // double endTime = CycleTimer::currentSeconds();
+  // distTime += endTime - startTime;
   return sqrt(accum);
 }
 
@@ -78,7 +78,7 @@ double dist(double *x, double *y, int nDim) {
  * Assigns each data point to its "closest" cluster centroid.
  */
 void computeAssignments(WorkerArgs *const args) {
-  double startTime = CycleTimer::currentSeconds();
+  // double startTime = CycleTimer::currentSeconds();
 
   double *minDist = new double[args->M];
   
@@ -102,8 +102,8 @@ void computeAssignments(WorkerArgs *const args) {
 
   delete[] minDist;
 
-  double endTime = CycleTimer::currentSeconds();
-  computeAssignmentsTime += endTime - startTime;
+  // double endTime = CycleTimer::currentSeconds();
+  // computeAssignmentsTime += endTime - startTime;
 }
 
 /**
@@ -115,11 +115,11 @@ void computeAssignmentsWorker(WorkerArgs *const args) {
   int startIndex = (args->threadId)*numCoordsPerThread;
   int endIndex = (args->threadId)*numCoordsPerThread + numCoordsPerThread;
 
-  double *minDist = new double[endIndex - startIndex];
-
   if (args->threadId == args->numThreads - 1){
     endIndex = args->M;
   }
+
+  double *minDist = new double[endIndex - startIndex];
   
   // Initialize arrays
   for (int m =startIndex; m < endIndex; m++) {
@@ -136,17 +136,16 @@ void computeAssignmentsWorker(WorkerArgs *const args) {
         minDist[m - startIndex] = d;
         args->clusterAssignments[m] = k;
       }
-    }
-
+    }  
+  }
   delete[] minDist;
-}
 }
 
 /**
  * Assigns each data point to its "closest" cluster centroid.
  */
 void computeAssignmentsThread(WorkerArgs *const args, int numThreads) {
-  double startTime = CycleTimer::currentSeconds();
+  // double startTime = CycleTimer::currentSeconds();
 
   static constexpr int MAX_THREADS = 64;
 
@@ -182,8 +181,8 @@ void computeAssignmentsThread(WorkerArgs *const args, int numThreads) {
       workers[i].join();
   }
 
-  double endTime = CycleTimer::currentSeconds();
-  computeAssignmentsTime += endTime - startTime;
+  // double endTime = CycleTimer::currentSeconds();
+  // computeAssignmentsTime += endTime - startTime;
 }
 
 
@@ -192,7 +191,7 @@ void computeAssignmentsThread(WorkerArgs *const args, int numThreads) {
  * each cluster.
  */
 void computeCentroids(WorkerArgs *const args) {
-  double startTime = CycleTimer::currentSeconds();
+  // double startTime = CycleTimer::currentSeconds();
 
   int *counts = new int[args->K];
 
@@ -225,15 +224,15 @@ void computeCentroids(WorkerArgs *const args) {
 
   delete[] counts;
 
-  double endTime = CycleTimer::currentSeconds();
-  computeCentroidsTime += endTime - startTime;
+  // double endTime = CycleTimer::currentSeconds();
+  // computeCentroidsTime += endTime - startTime;
 }
 
 /**
  * Computes the per-cluster cost. Used to check if the algorithm has converged.
  */
 void computeCost(WorkerArgs *const args) {
-  double startTime = CycleTimer::currentSeconds();
+  // double startTime = CycleTimer::currentSeconds();
   double *accum = new double[args->K];
 
   // Zero things out
@@ -255,8 +254,8 @@ void computeCost(WorkerArgs *const args) {
 
   delete[] accum;
 
-  double endTime = CycleTimer::currentSeconds();
-  computeCostTime += endTime - startTime;
+  // double endTime = CycleTimer::currentSeconds();
+  // computeCostTime += endTime - startTime;
 }
 
 /**
@@ -315,15 +314,15 @@ void kMeansThread(double *data, double *clusterCentroids, int *clusterAssignment
     args.start = 0;
     args.end = K;
     
-    // computeAssignments(&args);
-    computeAssignmentsThread(&args, 10);
+    computeAssignments(&args);
+    // computeAssignmentsThread(&args, 5);
     computeCentroids(&args);
     computeCost(&args);
 
     iter++;
   }
-
-  printf("distTime: %f, computeCentroidsTime: %f, computeCostTime: %f, conmputeAssignmentsTime: %f", distTime, computeCentroidsTime, computeCostTime, computeAssignmentsTime);
+  printf("Non Threaded");
+  // printf("distTime: %f, computeCentroidsTime: %f, computeCostTime: %f, conmputeAssignmentsTime: %f", distTime, computeCentroidsTime, computeCostTime, computeAssignmentsTime);
 
   delete[] currCost;
   delete[] prevCost;
