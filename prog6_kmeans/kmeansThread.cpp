@@ -68,7 +68,7 @@ double dist(double *x, double *y, int nDim) {
   }
 
   double endTime = CycleTimer::currentSeconds();
-  double distTime += endTime - startTime;
+  distTime += endTime - startTime;
   return sqrt(accum);
 }
 
@@ -101,7 +101,7 @@ void computeAssignments(WorkerArgs *const args) {
   delete[] minDist;
 
   double endTime = CycleTimer::currentSeconds();
-  double computeAssignmentsTime += endTime - startTime;
+  computeAssignmentsTime += endTime - startTime;
 }
 
 /**
@@ -143,7 +143,7 @@ void computeCentroids(WorkerArgs *const args) {
   delete[] counts;
 
   double endTime = CycleTimer::currentSeconds();
-  double computeCentroidsTime += endTime - startTime;
+  computeCentroidsTime += endTime - startTime;
 }
 
 /**
@@ -173,7 +173,7 @@ void computeCost(WorkerArgs *const args) {
   delete[] accum;
 
   double endTime = CycleTimer::currentSeconds();
-  double computeCostTime += endTime - startTime;
+  computeCostTime += endTime - startTime;
 }
 
 /**
