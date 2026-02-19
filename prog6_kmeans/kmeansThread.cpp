@@ -314,8 +314,8 @@ void kMeansThread(double *data, double *clusterCentroids, int *clusterAssignment
     args.start = 0;
     args.end = K;
     
-    computeAssignments(&args);
-    // computeAssignmentsThread(&args, 5);
+    // computeAssignments(&args);
+    computeAssignmentsThread(&args, 10);
     computeCentroids(&args);
     computeCost(&args);
 
