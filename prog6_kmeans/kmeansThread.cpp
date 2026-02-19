@@ -170,6 +170,7 @@ void computeAssignmentsThread(WorkerArgs *const args, int numThreads) {
     workerArgs[i].clusterAssignments = args->clusterAssignments;
     workerArgs[i].currCost = args->currCost;
     workerArgs[i].threadId = i;
+    workerArgs[i].numThreads = numThreads;
   }
 
   for (int i=1; i<numThreads; i++) {
