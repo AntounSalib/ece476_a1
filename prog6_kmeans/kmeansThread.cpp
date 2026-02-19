@@ -239,6 +239,8 @@ void kMeansThread(double *data, double *clusterCentroids, int *clusterAssignment
     iter++;
   }
 
+  printf("distTime: %f, computeCentroidsTime: %f, computeCostTime: %f, conmputeAssignmentsTime: %f", distTime, computeCentroidsTime, computeCostTime, computeAssignmentsTime);
+
   delete[] currCost;
   delete[] prevCost;
 }
