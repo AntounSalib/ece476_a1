@@ -8,6 +8,12 @@
 
 using namespace std;
 
+double distTime = 0.0f;
+double computeCentroidsTime = 0.0f;
+double computeCostTime = 0.0f;
+double computeAssignmentsTime = 0.0f;
+
+
 typedef struct {
   // Control work assignments
   int start, end;
@@ -62,8 +68,7 @@ double dist(double *x, double *y, int nDim) {
   }
 
   double endTime = CycleTimer::currentSeconds();
-  double runTime = endTime - startTime;
-  printf("Dist ran for %f", runTime);
+  double distTime += endTime - startTime;
   return sqrt(accum);
 }
 
@@ -96,8 +101,7 @@ void computeAssignments(WorkerArgs *const args) {
   delete[] minDist;
 
   double endTime = CycleTimer::currentSeconds();
-  double runTime = endTime - startTime;
-  printf("ComputeAssignments ran for %f", runTime);
+  double computeAssignmentsTime += endTime - startTime;
 }
 
 /**
@@ -139,8 +143,7 @@ void computeCentroids(WorkerArgs *const args) {
   delete[] counts;
 
   double endTime = CycleTimer::currentSeconds();
-  double runTime = endTime - startTime;
-  printf("computeCentroids ran for %f", runTime);
+  double computeCentroidsTime += endTime - startTime;
 }
 
 /**
@@ -170,8 +173,7 @@ void computeCost(WorkerArgs *const args) {
   delete[] accum;
 
   double endTime = CycleTimer::currentSeconds();
-  double runTime = endTime - startTime;
-  printf("computeCentroids ran for %f", runTime);
+  double computeCostTime += endTime - startTime;
 }
 
 /**
