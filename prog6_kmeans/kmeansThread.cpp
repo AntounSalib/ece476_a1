@@ -171,7 +171,7 @@ void computeCost(WorkerArgs *const args) {
 
   double endTime = CycleTimer::currentSeconds();
   double runTime = endTime - startTime;
-  printf("computeCost ran for %f", runTime);
+  printf("computeCentroids ran for %f", runTime);
 }
 
 /**
